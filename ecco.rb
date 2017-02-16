@@ -1,26 +1,25 @@
 require "curb"
 require "nokogiri"
 require "pry"
-require "mechanize"
+
 
 def get_page(url)
   return Nokogiri::HTML(Curl.get(url).body_str)
 end
 
-def image
-  pic = Mechanize.new
-end
 
 def nzz
   doc = get_page("https://www.nzz.ch/")
   doc.css('.title__name')[0].inner_text
-  link = 'http://nzz-img.s3.amazonaws.com/2017/2/14/b64d9e24-33e4-4fb9-bfaf-6105237fad75.jpeg'
 end
+
 
 def repubblica
   doc = get_page("http://www.repubblica.it/")
-  #doc.css('article').first.css('a img').first.attribute("alt").text
-  doc.css('article > header > h1').map { |h| h.children.first.text }.first
+  header = doc.css('article').first.css('a img').first.attribute("alt").text
+  description = doc.css('figcaption').text
+  image = doc.css('article').first.css('img').first.attr('src')
+  relative_link = doc.css('article').first.css('a').first.attr('href')
 end
 
 def daily_mail
@@ -39,7 +38,7 @@ def ny_times
 end
 
 
-# binding.pry
+binding.pry
 
 puts nzz
 
